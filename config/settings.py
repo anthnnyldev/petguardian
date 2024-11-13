@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-@h&^h$)a%0)17($u%frgc)=z0)_qw4(@wpwl8food$gn%jeym_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['petguardian.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['petguardian-3hrc.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
