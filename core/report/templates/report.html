@@ -1,0 +1,56 @@
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white rounded-lg shadow-md p-8 max-w-lg w-full">
+        <h1 class="text-2xl font-bold mb-4">Reporte</h1>
+        <p class="text-gray-700 mb-6">Crea tu reporte de mascota perdida para empezar la difusión 😢<br>Por favor, comparte los datos necesarios para ayudarte a verificar dónde está tu mascota.</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-gray-700">1. Descripción de la mascota:</label>
+                <textarea name="pet_description" class="w-full border rounded-md p-2" rows="3"></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">2. Descripción de la publicación:</label>
+                <textarea name="post_description" class="w-full border rounded-md p-2" rows="3"></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">3. Comparte una foto o video de tu mascota:</label>
+                <input type="file" name="media" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">4. Ubicación donde se perdió:</label>
+                <input type="text" id="location" class="w-full border rounded-md p-2" placeholder="Ingresa la ubicación">
+            </div>
+            <input type="hidden" name="latitude" id="latitude">
+            <input type="hidden" name="longitude" id="longitude">
+            <div class="text-center">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700">Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Cargar la API de Google Maps de forma asíncrona -->
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYTIrdYoQgrpBfZayR30G6_ObZViJ1Tn4&libraries=places&callback=initAutocomplete"
+    async
+    defer
+></script>
+<script>
+    let autocomplete;
+    function initAutocomplete() {
+        autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById('location'),
+            { types: ['geocode'] }
+        );
+
+        autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            document.getElementById('latitude').value = place.geometry.location.lat();
+            document.getElementById('longitude').value = place.geometry.location.lng();
+        });
+    }
+</script>
+{% endblock content %}

@@ -1,0 +1,29 @@
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-4">Eliminar Reporte</h2>
+    <div class="bg-white rounded-lg shadow-md p-8 max-w-lg mx-auto">
+        <p class="text-gray-800 mb-4">¿Estás seguro de que quieres eliminar este reporte?</p>
+        <div class="mb-4">
+            <p class="font-bold">Descripción de la Mascota:</p>
+            <p class="text-gray-700">{{ report.pet_description }}</p>
+        </div>
+        <div class="mb-4">
+            <p class="font-bold">Imagen:</p>
+            {% if report.media %}
+            <img src="{{ report.media.url }}" alt="Imagen del Reporte" class="rounded-lg shadow-md h-60 w-60">
+            {% else %}
+            <p>No hay imagen disponible.</p>
+            {% endif %}
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex justify-between">
+                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-md shadow-sm">Eliminar Reporte</button>
+                <a href="{% url 'report:report_list' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-md shadow-sm">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

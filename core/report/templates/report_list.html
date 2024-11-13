@@ -1,0 +1,73 @@
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<body class="bg-gray-100 flex">
+    <div class="flex-1 p-10">
+        <section class="text-center py-10 bg-white rounded-lg shadow-md">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl lg:text-3xl text-gray-800 font-bold mb-4">Mis Reportes</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% if reports %}
+                        {% for report in reports %}
+                        <div class="bg-white rounded-lg shadow-md p-6 relative">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center">
+                                    {% if report.user.profile_image %}
+                                        <img src="{{ report.user.profile_image.url }}" alt="Imagen de perfil de {{ report.user.username }}" class="rounded-full h-10 w-10 mr-3">
+                                    {% else %}
+                                        <img src="{% static 'img/default_profile.jpg' %}" alt="Imagen de perfil por defecto" class="rounded-full h-10 w-10 mr-3">
+                                    {% endif %}
+                                    <span class="text-gray-800 font-bold">{{ report.user.username }}</span>
+                                </div>
+                                <div class="relative">
+                                    <button id="dropdownBtn{{ report.id }}" class="text-gray-600 focus:outline-none" onclick="toggleDropdown('{{ report.id }}')">
+                                        <i class="bx bx-dots-vertical-rounded text-3xl"></i>
+                                    </button>
+                                    <div id="dropdownMenu{{ report.id }}" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 hidden">
+                                        <a href="{% url 'report:edit_report' report.id %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
+                                        <a href="{% url 'report:delete_report' report.id %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Eliminar</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if report.media %}
+                            <div class="flex justify-center items-center">
+                                <img src="{{ report.media.url }}" alt="Report Image" class="rounded-lg shadow-md mb-4 h-60 w-60">
+                            </div>
+                            {% endif %}
+                            <p class="text-gray-800 mb-4">{{ report.pet_description }}</p>
+                            <p class="text-gray-800 mb-4">{{ report.post_description }}</p>
+                            <div class="flex items-center">
+                                <i class='bx bx-heart text-2xl text-gray-700 mr-2'></i> <span>1,489</span>
+                                <i class='bx bx-comment text-2xl text-gray-700 ml-6 mr-2'></i> <span>3,000</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-gray-800">No tienes reportes creados.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+<script>
+    // Función para alternar la visibilidad del menú desplegable
+    function toggleDropdown(reportId) {
+        const dropdownMenu = document.getElementById(`dropdownMenu${reportId}`);
+        dropdownMenu.classList.toggle('hidden');
+    }
+
+    // Cerrar el menú desplegable al hacer clic fuera de él
+    document.addEventListener('click', function(event) {
+        if (!event.target.matches('.bx-dots-vertical-rounded')) {
+            const dropdowns = document.getElementsByClassName('rounded-md shadow-lg');
+            for (let i = 0; i < dropdowns.length; i++) {
+                const dropdownMenu = dropdowns[i];
+                if (!dropdownMenu.classList.contains('hidden')) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            }
+        }
+    });
+</script>
+{% endblock content %}

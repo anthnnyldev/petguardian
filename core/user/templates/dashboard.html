@@ -1,0 +1,61 @@
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<body class="bg-gray-100 flex">
+    <div class="flex-1 p-10">
+        <section class="text-center py-10 bg-white rounded-lg shadow-md">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl lg:text-3xl text-gray-800 font-bold mb-4">Nuevos reportes de la comunidad</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for report in reports %}
+                    <div class="bg-white rounded-lg shadow-md p-6 relative">
+                        <div class="flex items-center mb-4">
+                            {% if report.user.profile_image %}
+                                <img src="{{ report.user.profile_image.url }}" alt="Imagen de perfil de {{ report.user.username }}" class="rounded-full h-10 w-10 mr-3">
+                            {% else %}
+                                <img src="{% static 'img/default_profile.jpg' %}" alt="Imagen de perfil por defecto" class="rounded-full h-10 w-10 mr-3">
+                            {% endif %}
+                            <span class="text-gray-800 font-bold">{{ report.user.username }}</span>
+                        </div>
+                        {% if report.media %}
+                        <div class="flex justify-center items-center">
+                            <img src="{{ report.media.url }}" alt="Report Image" class="rounded-lg shadow-md mb-4 h-60 w-60">
+                        </div>
+                        {% endif %}
+                        <p class="text-gray-800 mb-4">{{ report.pet_description }}</p>
+                        <p class="text-gray-800 mb-4">{{ report.post_description }}</p>
+                        <div class="flex items-center mb-4">
+                            <form action="{% url 'report:like_report' report.id %}" method="post" class="inline-block">
+                                {% csrf_token %}
+                                <button type="submit" class="text-gray-700 focus:outline-none">
+                                    <i class='{% if user in report.likes.all %}bx bxs-heart{% else %}bx bx-heart{% endif %} text-2xl'></i>
+                                </button>
+                            </form>
+                            <span class="ml-2">{{ report.total_likes }}</span>
+                            <i class='bx bx-comment text-2xl text-gray-700 ml-6 mr-2'></i> <span>{{ report.comments.count }}</span>
+                        </div>
+                        <div>
+                            {% for comment in report.comments.all %}
+                                <div class="bg-gray-100 rounded-lg p-3 mb-2">
+                                    <p class="text-gray-800"><strong>{{ comment.user.username }}:</strong> {{ comment.text }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4">
+                            <form action="{% url 'report:add_comment' report.id %}" method="post">
+                                {% csrf_token %}
+                                <textarea name="text" rows="2" class="w-full border rounded-md p-2" placeholder="Escribe un comentario..."></textarea>
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-md shadow-sm mt-2">Comentar</button>
+                            </form>
+                        </div>
+                        <div class="mt-4">
+                            <a href="{% url 'messaging:send_message' report.user.id %}" class="bg-green-500 hover:bg-green-700 text-white py-1 px-4 rounded-md shadow-sm">Enviar mensaje</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+{% endblock content %}

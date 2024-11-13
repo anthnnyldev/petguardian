@@ -1,0 +1,59 @@
+{% extends "sidebar.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-4 text-white">Localiza a tu mascota</h2>
+    <div id="map" class="h-96 w-full"></div>
+</div>
+
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: {lat: 0, lng: 0} // Centrar el mapa en coordenadas específicas o ajustar automáticamente
+        });
+
+        var reports = {{ reports|safe }}; // Obtener los reportes perdidos desde Django, asegúrate de que se pase correctamente
+
+        reports.forEach(function(report) {
+            var marker = new google.maps.Marker({
+                position: {lat: parseFloat(report.latitude), lng: parseFloat(report.longitude)},
+                map: map,
+                title: report.user // Mostrar el nombre de usuario del propietario del reporte
+            });
+
+            var infowindow = new google.maps.InfoWindow({
+                content: `
+                    <div>
+                        <h3>${report.user}</h3>
+                        <p>${report.pet_description}</p>
+                        <p>${report.post_description}</p>
+                        <img src="${report.media}" alt="Imagen de Mascota" style="max-width: 200px;">
+                    </div>
+                `
+            });
+
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+        });
+
+        // Ajustar el mapa para mostrar todos los marcadores
+        if (reports.length > 0) {
+            var bounds = new google.maps.LatLngBounds();
+            reports.forEach(function(report) {
+                bounds.extend(new google.maps.LatLng(report.latitude, report.longitude));
+            });
+            map.fitBounds(bounds);
+        }
+    }
+
+    // Inicializar el mapa cuando la página cargue
+    window.onload = function() {
+        initMap();
+    };
+</script>
+
+<!-- Incluir el script de la API de Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYTIrdYoQgrpBfZayR30G6_ObZViJ1Tn4&callback=initMap" async defer></script>
+{% endblock %}

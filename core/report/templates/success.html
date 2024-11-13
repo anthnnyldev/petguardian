@@ -1,0 +1,11 @@
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white rounded-lg shadow-md p-8 max-w-lg w-full text-center">
+        <h1 class="text-2xl font-bold mb-4">Reporte Enviado</h1>
+        <p class="text-gray-700 mb-6">¡Gracias por enviar tu reporte! Haremos nuestro mejor esfuerzo para ayudarte a encontrar a tu mascota.</p>
+        <a href="{% url 'report:create_report' %}" class="bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-700">Crear otro reporte</a>
+    </div>
+</div>
+{% endblock content %}
